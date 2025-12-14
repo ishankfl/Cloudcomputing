@@ -17,15 +17,28 @@ print("Connected successfully")
 
 MQTT_CLIENT_ID = 'yourname-clientid-123'
 MQTT_BROKER = 'broker.mqttdashboard.com'
-MQTT_TOPIC = 'yourname-topic-something'
-#connection to mqtt
-mqtt_publisher = MQTTClient(MQTT_CLIENT_ID, MQTT_BROKER)
-mqtt_publisher.connect()
+MQTT_TOPIC = 'yourname-topic-something-1'
 
-i = 0
+def received_msg(topic, msg):
+    print("Topic", topic)
+    print("Msg", msg)
+
+#connection to mqtt
+mqtt_subscriber = MQTTClient(MQTT_CLIENT_ID, MQTT_BROKER)
+mqtt_subscriber.set_callback(received_msg)
+mqtt_subscriber.connect()
+mqtt_subscriber.subscribe(MQTT_TOPIC)
+
 while True:
-    data = {'number':i}
-    payload = ujson.dumps(data) # dictionary converted to json
-    mqtt_publisher.publish(MQTT_TOPIC, payload)
-    i+=1
-    print("sent data", payload)
+    mqtt_subscriber.check_msg()
+    time.sleep(.3)
+    print("Running...")
+
+
+# i = 0
+# while True:
+#     data = {'number':i}
+#     payload = ujson.dumps(data) # dictionary converted to json
+#     mqtt_publisher.publish(MQTT_TOPIC, payload)
+#     i+=1
+#     print("sent data", payload)
