@@ -1,6 +1,9 @@
 import network 
 import time
 from umqtt.simple import MQTTClient 
+from machine import Pin
+
+led_pin = Pin(4, Pin.OUT) #setup led pin
 
 wifi = network.WLAN(network.STA_IF)
 wifi.active(True)
@@ -17,6 +20,12 @@ MQTT_TOPIC = 'ishan-heloo123-led'
 
 def msg_received(topic, msg):   #callback function
     print("MSG Received", msg)
+    decode_msg = msg.decode()
+    if decode_msg == 'ON':
+        led_pin.value(1)
+        
+    if decode_msg == 'OFF':
+        led_pin.value(0)
 
 mqtt_subscriber = MQTTClient(MQTT_CLIENT_ID, MQTT_SERVER)
 mqtt_subscriber.set_callback(msg_received)
